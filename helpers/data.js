@@ -9,16 +9,17 @@ var getAllCustomers = function(regFunction){
             let  customer = {
                 id: row.dataValues.id,
                 name: row.dataValues.name,
-                weigth: row.dataValues.weight,
+                weight: row.dataValues.weight,
                 volume: row.dataValues.volume,
+                adress: row.dataValues.adress,
                 longitude: row.dataValues.longitude,
                 latitude: row.dataValues.latitude,
-                posjecen: 0
+                visited: 0
             };
             allCustomers.push(customer);
         });
 
-        let sortirani_niz = [];
+        let sorted = [];
         let min = Math.ceil(0);
         let max = Math.floor(allCustomers.length);
         let random_index =  Math.floor(Math.random() * (max - min)) + min;
@@ -27,20 +28,20 @@ var getAllCustomers = function(regFunction){
             if (allCustomers.length === 1){
                 random_index = 0;
             }
-            allCustomers[random_index].posjecen = 1;
-            let trenutni = random_index;
-            let udaljenost = 0;
-            sortirani_niz.push(allCustomers[trenutni]);
+            allCustomers[random_index].visited = 1;
+            let curent_index = random_index;
+            let dist = 0;
+            sorted.push(allCustomers[curent_index]);
 
-            while(sortirani_niz.length !== allCustomers.length){
-                let min_udaljenost = 10000000000;
+            while(sorted.length !== allCustomers.length){
+                let min_dist = 10000000000;
                 let min_index = -1;
                 for(let j = 0; j<allCustomers.length; j++){
-                    if(allCustomers[j].posjecen === 0){
-                        udaljenost = geodist({lat: allCustomers[j].latitude, lon: allCustomers[j].longitude},
-                            {lat: allCustomers[trenutni].latitude, lon: allCustomers[trenutni].longitude});
-                        if (udaljenost <= min_udaljenost){
-                            min_udaljenost = udaljenost;
+                    if(allCustomers[j].visited === 0){
+                        dist = geodist({lat: allCustomers[j].latitude, lon: allCustomers[j].longitude},
+                            {lat: allCustomers[curent_index].latitude, lon: allCustomers[curent_index].longitude});
+                        if (dist <= min_dist){
+                            min_dist = dist;
                             min_index = j;
                         }
                     }
@@ -48,14 +49,14 @@ var getAllCustomers = function(regFunction){
                 if (min_index === -1) {
                     break;
                 }
-                trenutni = min_index;
-                allCustomers[min_index].posjecen = 1;
-                sortirani_niz.push(allCustomers[min_index])
+                curent_index = min_index;
+                allCustomers[min_index].visited = 1;
+                sorted.push(allCustomers[min_index])
 
             }
         }
 
-        regFunction(sortirani_niz);
+        regFunction(sorted);
 
     }).catch(err => {
         console.log('error neki',err.message);
@@ -65,7 +66,7 @@ var getAllCustomers = function(regFunction){
 
 
 var addCustomer = async (obj,fun)=>{
-        db.Customers.create({ name: obj.name, volume: obj.volume, weight: obj.weight, longitude: obj.longitude, latitude: obj.latitude})
+        db.Customers.create({ name: obj.name, volume: obj.volume, weight: obj.weight, adress: obj.adress, longitude: obj.longitude, latitude: obj.latitude})
             .then(row => {
                 console.log("Kupac uspjesno dodata u tabelu.");
                 fun();

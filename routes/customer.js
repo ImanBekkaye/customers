@@ -13,11 +13,12 @@ router.get('/',function(req, res,next){
 });
 
 router.post('/', function(req, res, next) {
-    //napraviomo objekat od podataka koje smo postali na rutu i talav objekat dodajemo u lisu
+
     var customer = {
         name: req.body.name,
         volume: req.body.volume,
         weight: req.body.weight,
+        adress: req.body.adress,
         longitude: req.body.longitude,
         latitude: req. body.latitude
     };

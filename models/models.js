@@ -10,6 +10,10 @@ const Customers = sequelize.define('customer',{
         autoIncrement: true,
 
     },
+    adress:{
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     volume:{
         type: Sequelize.DECIMAL,
         allowNull: true
